@@ -1,0 +1,34 @@
+{
+    "name": "broken-titan/laravel-idempotency-middleware",
+    "description": "Idempotency middleware for Laravel.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marshall Miller",
+            "email": "contact@brokentitan.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.2"
+    },
+    "require-dev": {
+        "mockery/mockery": "1.4.4",
+        "phpunit/phpunit": "9.5.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "BrokenTitan\\Idempotency\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": [
+            "vendor\\bin\\phpunit"
+        ]
+    }
+}
