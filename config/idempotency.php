@@ -2,6 +2,6 @@
 
 	return [
 		"expiration" => 1440,
-		"header" => "X-Request-Id",
+		"header" => "Idempotency-Key",
         "methods" => ["POST"]
 	];
