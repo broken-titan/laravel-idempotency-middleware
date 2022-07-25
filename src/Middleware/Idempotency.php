@@ -7,8 +7,8 @@
     use Illuminate\Http\Request;
      
     class Idempotency {
-        public function handle(Request $request, Closure $next, ?string $header = null, ?array $methods = null, ?int $expiration = null) {
-            if (!in_array($request->method(), $methods ?? config("idempotency.methods"))) {
+        public function handle(Request $request, Closure $next, ?string $header = null, ?string $method = null, ?int $expiration = null) {
+            if (!in_array($request->method(), [$method] ?? config("idempotency.methods"))) {
                 return $next($request);
             }
 
