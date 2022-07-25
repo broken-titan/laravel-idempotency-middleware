@@ -1,6 +1,6 @@
 <?php
 
-    namespace BrokenTitan\Klaviyo\Providers;
+    namespace BrokenTitan\Idempotency\Providers;
 
     use Illuminate\Support\ServiceProvider;
 
