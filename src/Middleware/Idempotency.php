@@ -8,7 +8,7 @@
      
     class Idempotency {
         public function handle(Request $request, Closure $next, ?string $header = null, ?string $method = null, ?int $expiration = null) {
-            if (!in_array($request->method(), [$method] ?? config("idempotency.methods"))) {
+            if (!in_array($request->method(), !empty($method) ? [$method] : config("idempotency.methods"))) {
                 return $next($request);
             }
 
