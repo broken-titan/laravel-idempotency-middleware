@@ -70,4 +70,14 @@
             $this->assertEmpty(Cache::get(crc32($request->getContent()) . "-{$requestId}"));
             $this->assertEquals("next", $response);
         }
+
+        public function test_WhetherSerializableClosure__ReturnsCorrectResponse()
+        {
+            $request = Request::create("/", "POST", [], [], [], [], "Test body");
+            $request->headers->set(Config::get("idempotency.header"), $requestId = "request-test");
+
+            $response = (new Idempotency)->handle($request, fn($request) => "next");
+
+            $this->assertEquals("next", $response);
+        }
     }

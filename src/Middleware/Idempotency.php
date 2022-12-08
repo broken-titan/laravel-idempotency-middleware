@@ -22,6 +22,9 @@
                 return $response;
             }
 
+            // Handle any closures that aren't Serializable.
+			$next = new SerializableClosure($next);
+
             $response = $next($request);
 
             cache([$requestId => $response], now()->addMinutes($expiration ?? config("idempotency.expiration")));
