@@ -25,7 +25,7 @@
             $response = $next($request);
 
             if ($response instanceof Response) {
-                $responseToCache = new Response($response->content(), $response->status(), $response->headers->all());
+                $responseToCache = new Response($response->content(), $response->status(), $response->headers->allPreserveCase());
                 cache([$requestId => $responseToCache], now()->addMinutes($expiration ?? config("idempotency.expiration")));
             }
 
