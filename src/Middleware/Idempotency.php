@@ -5,6 +5,7 @@
     use Closure;
     use Illuminate\Contracts\Console\Kernel;
     use Illuminate\Http\Request;
+	use Opis\Closure\SerializableClosure;
      
     class Idempotency {
         public function handle(Request $request, Closure $next, ?string $header = null, ?string $method = null, ?int $expiration = null) {
