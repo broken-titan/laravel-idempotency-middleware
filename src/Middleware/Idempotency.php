@@ -4,8 +4,8 @@
 
     use Closure;
     use Illuminate\Contracts\Console\Kernel;
-    use Illuminate\Http\Request;
-	use Opis\Closure\SerializableClosure;
+    use Illuminate\Http\{Request, Response};
+    use Opis\Closure\SerializableClosure;
      
     class Idempotency {
         public function handle(Request $request, Closure $next, ?string $header = null, ?string $method = null, ?int $expiration = null) {
@@ -28,7 +28,10 @@
 
             $response = $next($request);
 
-            cache([$requestId => $response], now()->addMinutes($expiration ?? config("idempotency.expiration")));
+            if ($response instanceof Response) {
+                $responseToCache = new Response($response->content(), $response->status(), $response->headers->allPreserveCase());
+                cache([$requestId => $responseToCache], now()->addMinutes($expiration ?? config("idempotency.expiration")));
+            }
 
             return $response;
         }

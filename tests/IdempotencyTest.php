@@ -3,7 +3,7 @@
     namespace Tests;
 
     use BrokenTitan\Idempotency\Middleware\Idempotency;
-    use Illuminate\Http\Request;
+    use Illuminate\Http\{Request, Response};
     use Illuminate\Support\Facades\{Cache, Config};
     use \Orchestra\Testbench\TestCase;
 
@@ -18,14 +18,16 @@
 
         public function test_IdempotentMethod_CachesResponse() {
             $requestId = "request-test";
-
+            
             $request = Request::create("/", "POST", [], [], [], [], "Test body");
             $request->headers->set(Config::get("idempotency.header"), $requestId); 
 
-            $response = (new Idempotency)->handle($request, fn($request) => "next");
+            $response = new Response("next", 200, ["Cache-control" => "private"]);
 
-            $this->assertEquals("next", Cache::get(crc32($request->getContent()) . "-{$requestId}"));
-            $this->assertEquals("next", $response);
+            $result = (new Idempotency)->handle($request, fn($request) => $response);
+
+            $this->assertEquals($response, Cache::get(crc32($request->getContent()) . "-{$requestId}"));
+            $this->assertEquals($response, $result);
         }
 
         public function test_IdempotentMethodWithDifferentChecksum_CachesResponse() {
@@ -34,18 +36,22 @@
             $request = Request::create("/", "POST", [], [], [], [], "Test body");
             $request->headers->set(Config::get("idempotency.header"), $requestId); 
 
-            $response = (new Idempotency)->handle($request, fn($request) => "next");
+            $response = new Response("next", 200, ["Cache-control" => "private"]);
 
-            $this->assertEquals("next", Cache::get(crc32($request->getContent()) . "-{$requestId}"));
-            $this->assertEquals("next", $response);
+            $result = (new Idempotency)->handle($request, fn($request) => $response);
+
+            $this->assertEquals($response, Cache::get(crc32($request->getContent()) . "-{$requestId}"));
+            $this->assertEquals($response, $result);
 
             $request = Request::create("/", "POST", [], [], [], [], "Test body 2");
             $request->headers->set(Config::get("idempotency.header"), $requestId); 
 
-            $response = (new Idempotency)->handle($request, fn($request) => "next2");
+            $response = new Response("next2", 200, ["Cache-control" => "private"]);
 
-            $this->assertEquals("next2", Cache::get(crc32($request->getContent()) . "-{$requestId}"));
-            $this->assertEquals("next2", $response);
+            $result = (new Idempotency)->handle($request, fn($request) => $response);
+
+            $this->assertEquals($response, Cache::get(crc32($request->getContent()) . "-{$requestId}"));
+            $this->assertEquals($response, $result);
         }
 
         public function test_NonIdempotentMethod_DoesNotCacheResponse() {
