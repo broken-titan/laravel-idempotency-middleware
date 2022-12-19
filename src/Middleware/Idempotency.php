@@ -5,6 +5,7 @@
     use Closure;
     use Illuminate\Contracts\Console\Kernel;
     use Illuminate\Http\{Request, Response};
+    use Opis\Closure\SerializableClosure;
      
     class Idempotency {
         public function handle(Request $request, Closure $next, ?string $header = null, ?string $method = null, ?int $expiration = null) {
@@ -21,6 +22,9 @@
             if ($response = cache($requestId)) {
                 return $response;
             }
+
+            // Handle any closures that aren't Serializable.
+			$next = new SerializableClosure($next);
 
             $response = $next($request);
 
