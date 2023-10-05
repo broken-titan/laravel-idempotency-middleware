@@ -5,7 +5,7 @@
     use Closure;
     use Illuminate\Contracts\Console\Kernel;
     use Illuminate\Http\{Request, Response};
-    use Opis\Closure\SerializableClosure;
+    use Laravel\SerializableClosure\SerializableClosure;
      
     class Idempotency {
         public function handle(Request $request, Closure $next, ?string $header = null, ?string $method = null, ?int $expiration = null) {
